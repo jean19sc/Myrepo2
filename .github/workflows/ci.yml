@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: index.html exists and is non-empty
+        run: test -s index.html
+
+      - name: HTML sanity check
+        run: npx --yes html-validate index.html || true
+
+      - name: No storage APIs
+        run: "! grep -nE 'localStorage|sessionStorage|indexedDB|document\.cookie' index.html"
+
+      - name: No !important
+        run: "! grep -n '!important' index.html"
+
+      - name: No alert or confirm
+        run: "! grep -nE '\balert\(|\bconfirm\(' index.html"
+
+      - name: Only formsubmit.co URLs
+        run: "! grep -oE 'https?://[^\"'\'' ]+' index.html | grep -v 'formsubmit.co'"
+
+      - name: FormSubmit endpoint is the placeholder
+        run: grep -q 'formsubmit.co/ajax/YOUR_EMAIL@example.com' index.html
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

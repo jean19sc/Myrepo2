@@ -1,0 +1,13 @@
+.env*
+*.pem
+*.key
+node_modules/
+.claude/
+.agents/
+.playwright-mcp/
+.mcp.json
+skills-lock.json
+*.pdf
+*.docx
+*.png
+Claude ULR.txt

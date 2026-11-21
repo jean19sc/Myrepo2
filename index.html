@@ -7,17 +7,23 @@
 <style>
 /* ===== Design tokens: palette + spacing scale ===== */
 :root {
-  --blue-900: #0b2a4a;
-  --blue-700: #0f4c8a;
-  --blue-600: #1560b0;
-  --blue-500: #2a7bd0;
-  --blue-100: #dbe8f7;
-  --blue-50:  #eef4fb;
-  --ink: #1b2733;
-  --ink-soft: #55657a;
-  --line: #d2dbe6;
-  --surface: #ffffff;
-  --bg: #f2f5f9;
+  --accent-900: #17403d;
+  --accent-700: #0f6b66;
+  --accent-600: #13807a;
+  --accent-500: #1f9d96;
+  --accent-100: #d6ece9;
+  --accent-50:  #eef6f4;
+  --ink: #26231f;
+  --ink-soft: #6a645b;
+  --line: #ddd6c9;
+  --surface: #fffdf8;
+  --bg: #f6f1e7;
+  --toast-bg: #26231f;
+  --toast-ink: #fffdf8;
+  --amber-ink: #8a5300;
+  --grey-ink: #47525f;
+  --scrim: rgba(38, 35, 31, .5);
+  --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
 
   --red: #c62828;
   --red-bg: #fdecea;
@@ -40,6 +46,32 @@
   --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+:root[data-theme="dark"] {
+  --accent-900: #9fdad5;
+  --accent-700: #1b7f79;
+  --accent-600: #14918a;
+  --accent-500: #35b3ab;
+  --accent-100: #1f3a38;
+  --accent-50:  #1f2724;
+  --ink: #ece6da;
+  --ink-soft: #a39c8e;
+  --line: #3a3730;
+  --surface: #25231f;
+  --bg: #1a1916;
+  --toast-bg: #ece6da;
+  --toast-ink: #1a1916;
+  --amber-ink: #f2c36b;
+  --grey-ink: #c3c8ce;
+  --scrim: rgba(0, 0, 0, .65);
+  --red: #ff8a80;
+  --red-bg: #3b1f1e;
+  --amber-bg: #3a2d12;
+  --blue-bg: #1d2e44;
+  --grey-bg: #2e2c28;
+  --green-bg: #1d3320;
+  --shadow: 0 1px 3px rgba(0, 0, 0, .5);
+}
+
 /* ===== Base ===== */
 * { box-sizing: border-box; }
 body {
@@ -51,50 +83,60 @@ body {
   line-height: 1.4;
 }
 button, input, select, textarea { font: inherit; color: inherit; }
-:focus-visible { outline: 3px solid var(--blue-500); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--accent-500); outline-offset: 2px; }
 [hidden], .backdrop[hidden] { display: none; }
 
 /* ===== Header ===== */
 .app-header {
-  background: var(--blue-900);
-  color: #fff;
+  background: var(--surface);
+  color: var(--ink);
+  border-bottom: 3px double var(--accent-700);
   padding: var(--sp-3) var(--sp-5);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-4);
 }
-.wordmark { font-size: 20px; font-weight: 700; letter-spacing: .04em; margin: 0; }
-.wordmark span { font-weight: 400; opacity: .8; margin-left: var(--sp-2); font-size: 14px; letter-spacing: 0; }
+.wordmark { font-family: var(--serif); font-size: 24px; font-weight: 700; margin: 0; }
+.wordmark span { font-weight: 400; font-style: italic; color: var(--ink-soft); margin-left: var(--sp-2); font-size: 15px; }
 .summary { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin: 0 auto 0 0; padding: 0; list-style: none; }
 .summary li {
-  background: rgba(255,255,255,.12);
+  background: var(--accent-50);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: var(--sp-1) var(--sp-3);
   font-size: 13px;
 }
 .summary strong { font-size: 16px; margin-right: var(--sp-1); }
-.summary li.warn { background: var(--red); }
+.summary li.warn { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+.header-tools { display: flex; gap: var(--sp-2); }
 .btn {
-  border: 1px solid var(--blue-600);
-  background: var(--blue-600);
+  border: 1px solid var(--accent-600);
+  background: var(--accent-600);
   color: #fff;
   padding: var(--sp-2) var(--sp-4);
   border-radius: var(--radius);
   cursor: pointer;
   font-weight: 600;
 }
-.btn:hover { background: var(--blue-700); }
+.btn:hover { background: var(--accent-700); }
 .btn:disabled { opacity: .65; cursor: progress; }
-.btn.secondary { background: var(--surface); color: var(--blue-700); }
-.btn.secondary:hover { background: var(--blue-50); }
-.app-header .btn { background: #fff; color: var(--blue-900); border-color: #fff; }
-.app-header .btn:hover { background: var(--blue-100); }
+.btn.secondary { background: var(--surface); color: var(--accent-700); }
+.btn.secondary:hover { background: var(--accent-50); }
 .demo-note {
   flex-basis: 100%;
   margin: 0;
   font-size: 12px;
-  opacity: .8;
+  color: var(--ink-soft);
+}
+kbd {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0 var(--sp-1);
+  background: var(--surface);
 }
 
 /* ===== Filter bar ===== */
@@ -130,18 +172,20 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
 .column {
   flex: 1 1 0;
   min-width: 0;
-  background: var(--blue-50);
+  background: var(--accent-50);
   border: 2px solid transparent;
   border-radius: var(--radius);
   padding: var(--sp-3);
   min-height: 160px;
 }
-.column.drop-target { border-color: var(--blue-500); background: var(--blue-100); border-style: dashed; }
+.column.drop-target { border-color: var(--accent-500); background: var(--accent-100); border-style: dashed; }
 .column-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-3); }
-.column-head h2 { font-size: 14px; margin: 0; text-transform: uppercase; letter-spacing: .05em; color: var(--blue-900); }
+.column-head h2 { font-family: var(--serif); font-size: 17px; margin: 0; color: var(--accent-900); }
+.column.over-limit { border-color: var(--amber); }
+.wip { font-size: 11px; font-weight: 700; color: var(--amber-ink); background: var(--amber-bg); border-radius: 999px; padding: 1px var(--sp-2); margin-left: var(--sp-2); }
 .column-sub { font-size: 11px; color: var(--ink-soft); margin: 0 0 var(--sp-3); }
 .count {
-  background: var(--blue-700);
+  background: var(--accent-700);
   color: #fff;
   border-radius: 999px;
   min-width: 24px;
@@ -181,11 +225,12 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   white-space: nowrap;
 }
 .pill.p-critical { background: var(--red-bg); color: var(--red); }
-.pill.p-high { background: var(--amber-bg); color: #8a5300; }
-.pill.p-medium { background: var(--blue-bg); color: var(--blue-700); }
-.pill.p-low { background: var(--grey-bg); color: #47525f; }
-.tag { background: var(--blue-50); color: var(--blue-700); border: 1px solid var(--blue-100); font-weight: 600; }
+.pill.p-high { background: var(--amber-bg); color: var(--amber-ink); }
+.pill.p-medium { background: var(--blue-bg); color: var(--accent-700); }
+.pill.p-low { background: var(--grey-bg); color: var(--grey-ink); }
+.tag { background: var(--accent-50); color: var(--accent-700); border: 1px solid var(--accent-100); font-weight: 600; }
 .overdue { background: var(--red-bg); color: var(--red); border: 1px solid var(--red); }
+.due-soon { background: var(--amber-bg); color: var(--amber-ink); font-size: 11px; font-weight: 700; padding: 2px var(--sp-2); border-radius: 999px; white-space: nowrap; }
 .card-actions { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); margin-top: var(--sp-2); }
 .card-actions select { width: auto; padding: 2px var(--sp-1); font-size: 12px; }
 .icon-btn {
@@ -206,7 +251,7 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
 /* ===== Modal ===== */
 .backdrop {
   position: fixed; inset: 0;
-  background: rgba(11, 42, 74, .55);
+  background: var(--scrim);
   display: flex; align-items: flex-start; justify-content: center;
   padding: var(--sp-5) var(--sp-4);
   overflow-y: auto;
@@ -220,7 +265,7 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   padding: var(--sp-5);
   box-shadow: 0 10px 40px rgba(0,0,0,.3);
 }
-.modal h2 { margin: 0 0 var(--sp-4); color: var(--blue-900); }
+.modal h2 { font-family: var(--serif); margin: 0 0 var(--sp-4); color: var(--accent-900); }
 .field { margin-bottom: var(--sp-3); }
 .field label { display: block; font-weight: 600; margin-bottom: var(--sp-1); font-size: 13px; }
 .field .req { color: var(--red); }
@@ -236,12 +281,14 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   z-index: 20; max-width: 340px;
 }
 .toast {
-  background: var(--blue-900); color: #fff;
+  background: var(--toast-bg); color: var(--toast-ink);
   padding: var(--sp-3) var(--sp-4);
   border-radius: var(--radius);
   box-shadow: 0 4px 16px rgba(0,0,0,.25);
-  border-left: 6px solid var(--blue-500);
+  border-left: 6px solid var(--accent-500);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
 }
+.toast button { border: 1px solid currentColor; background: transparent; color: inherit; border-radius: 4px; padding: 1px var(--sp-2); cursor: pointer; font-weight: 700; }
 .toast.success { border-left-color: var(--green); }
 .toast.warn { border-left-color: var(--amber); }
 
@@ -260,8 +307,12 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
 <header class="app-header">
   <h1 class="wordmark">IT PMO<span>Project Board</span></h1>
   <ul class="summary" id="summary" aria-label="Board summary"></ul>
-  <button type="button" class="btn" id="open-add">+ Add Task</button>
-  <p class="demo-note">Demo data only &mdash; the board lives in memory, so refreshing the page resets it to the seeded tasks.</p>
+  <div class="header-tools">
+    <button type="button" class="btn secondary" id="export-csv">Export CSV</button>
+    <button type="button" class="btn secondary" id="toggle-theme" aria-pressed="false">Dark mode</button>
+    <button type="button" class="btn" id="open-add">+ Add Task</button>
+  </div>
+  <p class="demo-note">Demo data only &mdash; the board lives in memory, so refreshing the page resets it to the seeded tasks. Shortcuts: <kbd>N</kbd> new task, <kbd>/</kbd> search.</p>
 </header>
 
 <!-- ===== Filter bar ===== -->
@@ -269,6 +320,10 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
   <div>
     <label for="f-project">Project</label>
     <select id="f-project"></select>
+  </div>
+  <div>
+    <label for="f-search">Search title or ID</label>
+    <input type="text" id="f-search" placeholder="e.g. SFTP or 0003" autocomplete="off">
   </div>
   <div>
     <label for="f-assignee">Assignee contains</label>
@@ -383,11 +438,14 @@ const PROJECTS = ["Core Banking Upgrade", "Digital Channels", "Cybersecurity Upl
 const CATEGORIES = ["Application Development", "Infrastructure", "Cybersecurity", "Data", "Compliance", "Vendor"];
 const PRIORITIES = ["Critical", "High", "Medium", "Low"];
 const ID_PREFIX = "UOB-ITPM-";
+const WIP_LIMITS = { "In Progress": 3 };   // soft limit: warns, never blocks
+const DUE_SOON_DAYS = 3;
 
 /* ===== State: single source of truth (memory only, no storage APIs) ===== */
 const state = {
   tasks: [],
-  filters: { project: "", assignee: "", priority: "" },
+  filters: { project: "", assignee: "", priority: "", search: "" },
+  lastDeleted: null,   // { task, index } kept for Undo
   confirmingId: null   // id of the card currently showing "Delete? Yes / No"
 };
 let idCounter = 0;
@@ -407,6 +465,19 @@ function toISODate(d) {
 function todayISO() { return toISODate(new Date()); }
 function offsetDate(days) { const d = new Date(); d.setDate(d.getDate() + days); return toISODate(d); }
 function isOverdue(task) { return task.status !== "Done" && task.dueDate < todayISO(); }
+function daysUntil(iso) {
+  const p = iso.split("-");
+  const due = new Date(+p[0], +p[1] - 1, +p[2]);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.round((due - today) / 86400000);
+}
+function dueSoonLabel(task) {
+  if (task.status === "Done" || isOverdue(task)) return "";
+  const n = daysUntil(task.dueDate);
+  if (n > DUE_SOON_DAYS) return "";
+  return n === 0 ? "Due today" : "Due in " + n + "d";
+}
 function formatDate(iso) {
   const p = iso.split("-");
   const d = new Date(+p[0], +p[1] - 1, +p[2]);
@@ -436,10 +507,12 @@ function seedTasks() {
 function applyFilters(tasks) {
   const f = state.filters;
   const needle = f.assignee.trim().toLowerCase();
+  const q = f.search.trim().toLowerCase();
   return tasks.filter(function (t) {
     return (!f.project || t.project === f.project) &&
            (!f.priority || t.priority === f.priority) &&
-           (!needle || t.assignee.toLowerCase().indexOf(needle) !== -1);
+           (!needle || t.assignee.toLowerCase().indexOf(needle) !== -1) &&
+           (!q || t.title.toLowerCase().indexOf(q) !== -1 || t.id.toLowerCase().indexOf(q) !== -1);
   });
 }
 
@@ -456,7 +529,8 @@ function renderCard(task) {
     : '<button type="button" class="icon-btn" data-action="delete" data-id="' + escapeHtml(task.id) + '" aria-label="Delete task ' + escapeHtml(task.id) + '">×</button>';
   return '<article class="card p-' + slug(escapeHtml(task.priority)) + '" draggable="true" data-id="' + escapeHtml(task.id) + '">' +
     '<div class="card-top"><span class="task-id">' + escapeHtml(task.id) + '</span>' +
-    (isOverdue(task) ? '<span class="overdue">Overdue</span>' : '') + '</div>' +
+    (isOverdue(task) ? '<span class="overdue">Overdue</span>' : '') +
+    (dueSoonLabel(task) ? '<span class="due-soon">' + escapeHtml(dueSoonLabel(task)) + '</span>' : '') + '</div>' +
     '<h3>' + escapeHtml(task.title) + '</h3>' +
     '<p class="meta">▤ ' + escapeHtml(task.project) + '</p>' +
     '<p class="meta">☺ ' + escapeHtml(task.assignee) + '</p>' +
@@ -484,6 +558,18 @@ function renderBoard() {
     const status = col.dataset.status;
     const items = visible.filter(function (t) { return t.status === status; });
     col.querySelector("[data-count]").textContent = items.length;
+    const limit = WIP_LIMITS[status];
+    const total = state.tasks.filter(function (t) { return t.status === status; }).length;
+    col.classList.toggle("over-limit", !!limit && total > limit);
+    const head = col.querySelector("h2");
+    const old = head.querySelector(".wip");
+    if (old) old.remove();
+    if (limit) {
+      const w = document.createElement("span");
+      w.className = "wip";
+      w.textContent = "WIP " + total + "/" + limit + (total > limit ? " – over limit" : "");
+      head.appendChild(w);
+    }
     col.querySelector("[data-cards]").innerHTML = items.length
       ? items.map(renderCard).join("")
       : '<p class="empty">No tasks</p>';
@@ -497,11 +583,56 @@ function moveTask(id, status) {
   if (!task || COLUMNS.indexOf(status) === -1 || task.status === status) return;
   task.status = status;
   renderBoard();
+  const limit = WIP_LIMITS[status];
+  if (limit && state.tasks.filter(function (t) { return t.status === status; }).length > limit) {
+    showToast(status + " is over its WIP limit of " + limit, "warn");
+  }
 }
 function deleteTask(id) {
-  state.tasks = state.tasks.filter(function (t) { return t.id !== id; });
+  const index = state.tasks.findIndex(function (t) { return t.id === id; });
+  if (index === -1) return;
+  state.lastDeleted = { task: state.tasks[index], index: index };
+  state.tasks.splice(index, 1);
   state.confirmingId = null;
   renderBoard();
+  showToast("Deleted " + id, "", { label: "Undo", onClick: undoDelete });
+}
+function undoDelete() {
+  const d = state.lastDeleted;
+  if (!d) return;
+  state.tasks.splice(Math.min(d.index, state.tasks.length), 0, d.task);
+  state.lastDeleted = null;
+  renderBoard();
+  showToast("Restored " + d.task.id, "success");
+}
+function csvCell(v) {
+  let s = String(v == null ? "" : v);
+  if (/^[=+\-@]/.test(s)) s = "'" + s;   // block spreadsheet formula injection
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+function exportCsv() {
+  const rows = applyFilters(state.tasks);
+  const head = ["Task ID", "Title", "Description", "Project", "Category", "Assignee", "Priority", "Due Date", "Status", "Overdue"];
+  const lines = [head.map(csvCell).join(",")].concat(rows.map(function (t) {
+    return [t.id, t.title, t.description, t.project, t.category, t.assignee, t.priority, t.dueDate, t.status, isOverdue(t) ? "Yes" : "No"].map(csvCell).join(",");
+  }));
+  const url = URL.createObjectURL(new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "it-pmo-tasks-" + todayISO() + ".csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  showToast("Exported " + rows.length + " task" + (rows.length === 1 ? "" : "s") + " to CSV", "success");
+}
+function toggleTheme() {
+  const root = document.documentElement;
+  const dark = root.dataset.theme !== "dark";
+  if (dark) root.dataset.theme = "dark"; else root.removeAttribute("data-theme");
+  const btn = document.getElementById("toggle-theme");
+  btn.setAttribute("aria-pressed", String(dark));
+  btn.textContent = dark ? "Light mode" : "Dark mode";
 }
 function addTask(data) {
   const task = {
@@ -516,12 +647,21 @@ function addTask(data) {
 }
 
 /* ===== Toasts ===== */
-function showToast(message, type) {
+function showToast(message, type, action) {
   const el = document.createElement("div");
   el.className = "toast " + (type || "");
-  el.textContent = message;   // textContent: never parsed as HTML
+  const text = document.createElement("span");
+  text.textContent = message;   // textContent: never parsed as HTML
+  el.appendChild(text);
+  if (action) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = action.label;
+    b.addEventListener("click", function () { action.onClick(); el.remove(); });
+    el.appendChild(b);
+  }
   document.getElementById("toasts").appendChild(el);
-  setTimeout(function () { el.remove(); }, type === "warn" ? 6000 : 3500);
+  setTimeout(function () { el.remove(); }, action ? 8000 : type === "warn" ? 6000 : 3500);
 }
 
 /* ===== FormSubmit notification (never allowed to break the board) ===== */
@@ -697,8 +837,19 @@ function wireEvents() {
   document.getElementById("f-project").addEventListener("change", function (e) { state.filters.project = e.target.value; renderBoard(); });
   document.getElementById("f-priority").addEventListener("change", function (e) { state.filters.priority = e.target.value; renderBoard(); });
   document.getElementById("f-assignee").addEventListener("input", function (e) { state.filters.assignee = e.target.value; renderBoard(); });
+  document.getElementById("f-search").addEventListener("input", function (e) { state.filters.search = e.target.value; renderBoard(); });
+  document.getElementById("export-csv").addEventListener("click", exportCsv);
+  document.getElementById("toggle-theme").addEventListener("click", toggleTheme);
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || !document.getElementById("modal").hidden) return;
+    const tag = (e.target.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select") return;
+    if (e.key === "n" || e.key === "N") { e.preventDefault(); openModal(); }
+    else if (e.key === "/") { e.preventDefault(); document.getElementById("f-search").focus(); }
+  });
   document.getElementById("clear-filters").addEventListener("click", function () {
-    state.filters = { project: "", assignee: "", priority: "" };
+    state.filters = { project: "", assignee: "", priority: "", search: "" };
+    document.getElementById("f-search").value = "";
     document.getElementById("f-project").value = "";
     document.getElementById("f-priority").value = "";
     document.getElementById("f-assignee").value = "";
