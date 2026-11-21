@@ -22,16 +22,20 @@ jobs:
         run: npx --yes html-validate index.html || true
 
       - name: No storage APIs
-        run: "! grep -nE 'localStorage|sessionStorage|indexedDB|document\.cookie' index.html"
+        run: |
+          ! grep -nE 'localStorage|sessionStorage|indexedDB|document\.cookie' index.html
 
       - name: No !important
-        run: "! grep -n '!important' index.html"
+        run: |
+          ! grep -n '!important' index.html
 
       - name: No alert or confirm
-        run: "! grep -nE '\balert\(|\bconfirm\(' index.html"
+        run: |
+          ! grep -nE '\balert\(|\bconfirm\(' index.html
 
       - name: Only formsubmit.co URLs
-        run: "! grep -oE 'https?://[^\"'\'' ]+' index.html | grep -v 'formsubmit.co'"
+        run: |
+          ! grep -oE 'https?://[^" ]+' index.html | grep -v 'formsubmit.co'
 
       - name: FormSubmit endpoint is the placeholder
         run: grep -q 'formsubmit.co/ajax/YOUR_EMAIL@example.com' index.html
