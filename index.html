@@ -274,9 +274,62 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
 .form-actions { display: flex; justify-content: flex-end; gap: var(--sp-2); margin-top: var(--sp-4); }
 
+/* ===== Meeting notice (reuses .backdrop / .modal) ===== */
+.notice-backdrop { align-items: center; z-index: 30; }
+.modal.notice { max-width: 440px; border-top: 6px solid var(--accent-700); text-align: left; }
+.notice-kicker { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-700); margin: 0 0 var(--sp-1); }
+.modal.notice h2 { margin-bottom: var(--sp-3); }
+.notice-details { margin: 0 0 var(--sp-4); padding: var(--sp-3); background: var(--accent-50); border: 1px solid var(--line); border-radius: var(--radius); display: grid; grid-template-columns: auto 1fr; gap: var(--sp-1) var(--sp-4); }
+.notice-details dt { color: var(--ink-soft); font-size: 12px; font-weight: 600; }
+.notice-details dd { margin: 0; font-weight: 600; }
+.notice-mandatory { margin: 0; padding: var(--sp-2) var(--sp-3); background: var(--amber-bg); color: var(--amber-ink); border-radius: var(--radius); font-size: 13px; font-weight: 700; }
+
+/* ===== Cyber assistant widget (neon palette scoped to the widget) ===== */
+.cyber {
+  --cy-bg: #0b0f1a; --cy-panel: #11182a; --cy-line: #1f3b5a;
+  --cy-cyan: #19f0ff; --cy-pink: #ff2fb3; --cy-ink: #d8f6ff; --cy-soft: #7f9bb3;
+  position: fixed; right: var(--sp-4); bottom: var(--sp-4); z-index: 25;
+  display: flex; flex-direction: column; align-items: flex-end; gap: var(--sp-3);
+  font-family: ui-monospace, Consolas, "Courier New", monospace;
+}
+.cyber-launch {
+  width: 64px; height: 64px; padding: 0; border-radius: 50%; cursor: pointer;
+  background: var(--cy-bg); border: 2px solid var(--cy-cyan);
+  box-shadow: 0 0 14px rgba(25, 240, 255, .55), 0 0 26px rgba(255, 47, 179, .3);
+}
+.cyber-launch:hover { box-shadow: 0 0 20px rgba(25, 240, 255, .8), 0 0 34px rgba(255, 47, 179, .5); }
+.cyber-launch svg, .cyber-head svg { display: block; width: 100%; height: 100%; }
+.cyber-launch.speaking { animation: cy-pulse 1s ease-in-out infinite; }
+@keyframes cy-pulse { 50% { box-shadow: 0 0 28px rgba(255, 47, 179, .9), 0 0 40px rgba(25, 240, 255, .7); } }
+.cyber-panel {
+  width: 340px; max-width: calc(100vw - 32px); height: 440px; max-height: calc(100vh - 120px);
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--cy-bg); color: var(--cy-ink);
+  border: 1px solid var(--cy-cyan); border-radius: var(--radius);
+  box-shadow: 0 0 18px rgba(25, 240, 255, .35), 0 10px 40px rgba(0, 0, 0, .5);
+}
+.cyber-panel[hidden] { display: none; }
+.cyber-head { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-2) var(--sp-3); background: var(--cy-panel); border-bottom: 1px solid var(--cy-pink); }
+.cyber-head .av { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--cy-cyan); overflow: hidden; flex: none; }
+.cyber-head h2 { margin: 0; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--cy-cyan); flex: 1; }
+.cyber-head h2 span { display: block; font-size: 10px; letter-spacing: .04em; text-transform: none; color: var(--cy-soft); }
+.cyber-head button { border: 1px solid var(--cy-line); background: transparent; color: var(--cy-cyan); border-radius: 4px; cursor: pointer; padding: 2px var(--sp-2); font-size: 12px; }
+.cyber-head button:hover { border-color: var(--cy-cyan); }
+.cyber-log { flex: 1; overflow-y: auto; padding: var(--sp-3); display: flex; flex-direction: column; gap: var(--sp-2); }
+.cy-msg { max-width: 88%; padding: var(--sp-2) var(--sp-3); font-size: 12px; line-height: 1.5; border-radius: 6px; overflow-wrap: anywhere; white-space: pre-line; }
+.cy-msg.bot { align-self: flex-start; background: var(--cy-panel); border: 1px solid var(--cy-line); border-left: 3px solid var(--cy-cyan); }
+.cy-msg.user { align-self: flex-end; background: #2a1030; border: 1px solid var(--cy-pink); }
+.cy-src { display: block; margin-top: var(--sp-1); font-size: 10px; color: var(--cy-soft); }
+.cyber-form { display: flex; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); border-top: 1px solid var(--cy-line); background: var(--cy-panel); }
+.cyber-form input { flex: 1; min-width: 0; background: var(--cy-bg); color: var(--cy-ink); border: 1px solid var(--cy-line); border-radius: 4px; padding: var(--sp-2); font-size: 12px; }
+.cyber-form input::placeholder { color: var(--cy-soft); }
+.cyber-form button { background: var(--cy-pink); color: #fff; border: 1px solid var(--cy-pink); border-radius: 4px; padding: 0 var(--sp-3); cursor: pointer; font-weight: 700; font-size: 12px; }
+.cyber :focus-visible { outline: 2px solid var(--cy-cyan); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .cyber-launch.speaking { animation: none; } }
+
 /* ===== Toasts ===== */
 .toasts {
-  position: fixed; right: var(--sp-4); bottom: var(--sp-4);
+  position: fixed; right: var(--sp-4); bottom: 96px;
   display: flex; flex-direction: column; gap: var(--sp-2);
   z-index: 20; max-width: 340px;
 }
@@ -418,6 +471,40 @@ input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="
     </form>
   </div>
 </div>
+
+<!-- ===== IT meeting notice: shown once, 10 seconds after page load ===== -->
+<div class="backdrop notice-backdrop" id="meeting-modal" hidden>
+  <div class="modal notice" role="alertdialog" aria-modal="true" aria-labelledby="meeting-title" aria-describedby="meeting-desc">
+    <p class="notice-kicker">Announcement</p>
+    <h2 id="meeting-title">IT Meeting Next Week</h2>
+    <dl class="notice-details" id="meeting-desc">
+      <dt>When</dt><dd>Next week, 10:00 AM</dd>
+      <dt>Where</dt><dd>Room 888</dd>
+    </dl>
+    <p class="notice-mandatory">Attendance is mandatory.</p>
+    <div class="form-actions">
+      <button type="button" class="btn" data-meeting-ack>Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Cyber IT assistant: text RAG chatbot, bottom right ===== -->
+<aside class="cyber" id="cyber" aria-label="IT assistant">
+  <section class="cyber-panel" id="cyber-panel" hidden aria-labelledby="cyber-title">
+    <div class="cyber-head">
+      <span class="av" data-avatar></span>
+      <h2 id="cyber-title">IT Assistant<span>Answers from the board and IT guide</span></h2>
+      <button type="button" id="cyber-voice" aria-pressed="false" title="Mute or unmute voice">Voice on</button>
+      <button type="button" id="cyber-close" aria-label="Close assistant">&times;</button>
+    </div>
+    <div class="cyber-log" id="cyber-log" role="log" aria-live="polite"></div>
+    <form class="cyber-form" id="cyber-form" autocomplete="off">
+      <input type="text" id="cyber-input" maxlength="200" placeholder="Ask e.g. what is overdue?" aria-label="Ask the IT assistant">
+      <button type="submit">Send</button>
+    </form>
+  </section>
+  <button type="button" class="cyber-launch" id="cyber-launch" aria-expanded="false" aria-controls="cyber-panel" aria-label="Open IT assistant" data-avatar></button>
+</aside>
 
 <!-- ===== Toast region (announced politely to screen readers) ===== -->
 <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
@@ -880,6 +967,199 @@ function init() {
   renderBoard();
 }
 init();
+
+/* ===== IT meeting notice: once, after 10 seconds on the page =====
+   Mirrors .claude/hooks/meeting-popup.js (inlined because this app is a single file). */
+const MEETING_NOTICE = { delayMs: 10000, modalId: "meeting-modal" };
+function showMeetingNotice() {
+  const addModal = document.getElementById("modal");
+  if (addModal && !addModal.hidden) { setTimeout(showMeetingNotice, 2000); return; }
+  const el = document.getElementById(MEETING_NOTICE.modalId);
+  if (!el) return;
+  const previous = document.activeElement;
+  el.hidden = false;
+  el.querySelector("[data-meeting-ack]").focus();
+  function close() {
+    el.hidden = true;
+    document.removeEventListener("keydown", onKey);
+    if (previous && previous.focus) previous.focus();
+  }
+  function onKey(e) { if (e.key === "Escape") close(); }
+  document.addEventListener("keydown", onKey);
+  el.querySelector("[data-meeting-ack]").addEventListener("click", close, { once: true });
+}
+setTimeout(showMeetingNotice, MEETING_NOTICE.delayMs);
+
+/* ===== Chatbot voice greeting =====
+   Mirrors .claude/hooks/chatbot-voice.js (inlined because this app is a single file). */
+const CHATBOT_VOICE = { phrase: "I am your IT assistant, how can I help you?", rate: 1, pitch: 0.8 };
+function speakGreeting() {
+  if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") return false;
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(CHATBOT_VOICE.phrase);
+  u.rate = CHATBOT_VOICE.rate;
+  u.pitch = CHATBOT_VOICE.pitch;
+  u.lang = "en-US";
+  const english = synth.getVoices().filter(function (v) { return /^en/i.test(v.lang); });
+  if (english.length) u.voice = english[0];
+  synth.speak(u);
+  return true;
+}
+
+/* ===== Cyber IT assistant: client-side RAG (retrieve, then compose) =====
+   Corpus = static IT guide passages + the live board (one passage per task + a summary).
+   Retrieval = TF-IDF keyword scoring. No network, no model: answers are built from the
+   top passages and cite them. */
+const AVATAR_SVG =
+  '<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#0b0f1a"/>' +
+  '<path d="M14 64c2-14 10-18 18-18s16 4 18 18z" fill="#1a2440" stroke="#19f0ff" stroke-width="1"/>' +
+  '<path d="M20 30c0-11 5-17 12-17s12 6 12 17c0 9-5 16-12 16s-12-7-12-16z" fill="#2b3556" stroke="#19f0ff" stroke-width="1.2"/>' +
+  '<path d="M18 28h28v8H18z" fill="#06121f" stroke="#ff2fb3" stroke-width="1.4"/>' +
+  '<rect x="22" y="30.5" width="9" height="3" fill="#19f0ff"/><rect x="34" y="30.5" width="9" height="3" fill="#ff2fb3"/>' +
+  '<path d="M27 41h10" stroke="#19f0ff" stroke-width="1.4" stroke-linecap="round"/>' +
+  '<path d="M44 22l6-6M50 16v6" stroke="#ff2fb3" stroke-width="1.2" fill="none"/></svg>';
+
+const IT_GUIDE = [
+  { id: "guide-add", title: "Add a task", text: "Click + Add Task or press N. Fill in title, project, category, assignee, priority, due date and status. Title, project, category, assignee, priority, due date and status are required; the due date cannot be in the past. New tasks get an ID like UOB-ITPM-0009." },
+  { id: "guide-move", title: "Move a task", text: "Drag a card to another column (Backlog, In Progress, Blocked, Done), or use the Move select on the card for a keyboard-friendly way." },
+  { id: "guide-delete", title: "Delete or undo", text: "Click the x on a card, then Yes to confirm delete. An Undo button appears afterwards so you can restore the deleted card." },
+  { id: "guide-filter", title: "Filter and search", text: "Use the filter bar to filter tasks by project, priority or assignee, or search by title or ID. Press / to jump to search. Clear filters resets them." },
+  { id: "guide-csv", title: "Export CSV", text: "Export CSV downloads the tasks currently shown after filters are applied, as a spreadsheet file." },
+  { id: "guide-theme", title: "Dark mode", text: "Use the Dark mode button in the header to switch between the light and dark theme." },
+  { id: "guide-demo", title: "Demo data", text: "This is a demo with fictitious bank data. The board lives in memory only, so refreshing the page resets it to the seeded tasks. Nothing is saved." },
+  { id: "guide-wip", title: "WIP limit", text: "In Progress has a soft work-in-progress limit of 3 tasks. Going over it shows a warning but never blocks you." },
+  { id: "guide-overdue", title: "Overdue and due soon", text: "A task is overdue when it is not Done and its due date is before today. Tasks due within 3 days show a due soon badge." },
+  { id: "guide-priority", title: "Priorities", text: "Priorities are Critical, High, Medium and Low. The card border colour shows priority: red critical, amber high, blue medium, grey low." },
+  { id: "guide-email", title: "Email notification", text: "Adding a task sends an email notification through FormSubmit. If email fails you see a warning, but the card is still added." },
+  { id: "guide-meeting", title: "IT meeting", text: "There is an IT meeting next week at 10am in Room 888. Attendance is mandatory." }
+];
+
+const STOP = "a an the is are was were be to of in on for and or it this that what which who how do does can i me my you your with at by from about any all show tell give list please there".split(" ");
+function cyTokens(s) {
+  return String(s).toLowerCase().replace(/[^a-z0-9\-]+/g, " ").split(" ").filter(function (w) { return w && STOP.indexOf(w) === -1; })
+    .map(function (w) { return w.length > 3 ? w.replace(/(ing|es|s)$/, "") : w; });
+}
+function cyCorpus() {
+  const docs = IT_GUIDE.map(function (g) { return { id: g.id, title: g.title, text: g.text, kind: "guide" }; });
+  state.tasks.forEach(function (t) {
+    const od = isOverdue(t);
+    docs.push({
+      id: t.id, kind: "task", task: t, title: t.title,
+      text: t.id + " " + t.title + " " + t.description + " " + t.project + " " + t.category + " " + t.assignee + " " +
+        t.priority + " " + t.status + (od ? " overdue late" : "")
+    });
+  });
+  const counts = COLUMNS.map(function (c) { return c + ": " + state.tasks.filter(function (t) { return t.status === c; }).length; });
+  const over = state.tasks.filter(isOverdue);
+  docs.push({
+    id: "board-summary", kind: "summary", title: "Board summary",
+    text: "board summary total count how many tasks " + counts.join(", ") + ". Overdue: " + over.length +
+      (over.length ? " (" + over.map(function (t) { return t.id; }).join(", ") + ")" : "") + "."
+  });
+  return docs;
+}
+function cyRetrieve(query, k) {
+  const docs = cyCorpus();
+  const q = cyTokens(query);
+  if (!q.length) return [];
+  const toks = docs.map(function (d) { return { t: cyTokens(d.text), h: cyTokens(d.title) }; });
+  const scored = docs.map(function (d, i) {
+    let score = 0;
+    q.forEach(function (w) {
+      const df = toks.filter(function (x) { return x.t.indexOf(w) !== -1; }).length;
+      if (!df) return;
+      const idf = Math.log(1 + docs.length / df);
+      const tf = toks[i].t.filter(function (x) { return x === w; }).length;
+      score += idf * (tf ? 1 + Math.log(tf) : 0) + (toks[i].h.indexOf(w) !== -1 ? idf : 0);
+    });
+    return { doc: d, score: score };
+  }).filter(function (s) { return s.score > 0; });
+  scored.sort(function (a, b) { return b.score - a.score; });
+  return scored.slice(0, k);
+}
+function cyTaskLine(t) {
+  return t.id + " · " + t.title + " — " + t.status + ", " + t.priority + ", " + t.assignee + ", due " + formatDate(t.dueDate) + (isOverdue(t) ? " (OVERDUE)" : "");
+}
+function cyAnswer(query) {
+  const hits = cyRetrieve(query, 3);
+  if (!hits.length) return { text: "No match in the board or IT guide. Try asking about overdue tasks, a project or assignee, adding or moving tasks, filters, or the IT meeting.", sources: [] };
+  const top = hits[0].doc;
+  let text;
+  if (top.kind === "task") {
+    const tasks = hits.filter(function (h) { return h.doc.kind === "task"; }).map(function (h) { return h.doc.task; });
+    text = "Found " + tasks.length + " matching task" + (tasks.length > 1 ? "s" : "") + ":\n" + tasks.map(cyTaskLine).join("\n");
+  } else if (top.kind === "summary") {
+    const over = state.tasks.filter(isOverdue);
+    text = top.text + (over.length ? "\n" + over.map(cyTaskLine).join("\n") : "");
+  } else {
+    text = top.text;
+  }
+  return { text: text, sources: hits.map(function (h) { return h.doc.id; }) };
+}
+
+function initCyber() {
+  const launch = document.getElementById("cyber-launch");
+  const panel = document.getElementById("cyber-panel");
+  const log = document.getElementById("cyber-log");
+  const input = document.getElementById("cyber-input");
+  const voiceBtn = document.getElementById("cyber-voice");
+  let voiceOn = true;
+  document.querySelectorAll("[data-avatar]").forEach(function (el) { el.innerHTML = AVATAR_SVG; });
+
+  function addMsg(who, text, sources) {
+    const m = document.createElement("div");
+    m.className = "cy-msg " + who;
+    m.textContent = text;
+    if (sources && sources.length) {
+      const s = document.createElement("span");
+      s.className = "cy-src";
+      s.textContent = "Sources: " + sources.join(", ");
+      m.appendChild(s);
+    }
+    log.appendChild(m);
+    log.scrollTop = log.scrollHeight;
+  }
+  function setOpen(open) {
+    panel.hidden = !open;
+    launch.setAttribute("aria-expanded", String(open));
+    if (open) {
+      if (!log.children.length) addMsg("bot", "I am your IT assistant, how can I help you?");
+      input.focus();
+    }
+  }
+  launch.addEventListener("click", function () {
+    const opening = panel.hidden;
+    setOpen(opening);
+    if (opening && voiceOn && speakGreeting()) {
+      launch.classList.add("speaking");
+      setTimeout(function () { launch.classList.remove("speaking"); }, 2800);
+    }
+  });
+  document.getElementById("cyber-close").addEventListener("click", function () {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    launch.classList.remove("speaking");
+    setOpen(false);
+    launch.focus();
+  });
+  voiceBtn.addEventListener("click", function () {
+    voiceOn = !voiceOn;
+    voiceBtn.textContent = voiceOn ? "Voice on" : "Voice off";
+    voiceBtn.setAttribute("aria-pressed", String(!voiceOn));
+    if (!voiceOn && "speechSynthesis" in window) window.speechSynthesis.cancel();
+  });
+  document.getElementById("cyber-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const q = input.value.trim();
+    if (!q) return;
+    addMsg("user", q);
+    input.value = "";
+    const a = cyAnswer(q);
+    addMsg("bot", a.text, a.sources);
+  });
+  panel.addEventListener("keydown", function (e) { if (e.key === "Escape") { document.getElementById("cyber-close").click(); } });
+}
+initCyber();
 </script>
 </body>
 </html>
